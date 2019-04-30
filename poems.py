@@ -39,6 +39,3 @@ def get(last_poems=[]):
         return generate_poem.main()
     else:
         return by_last_poems(last_poems)
-
-
-print(get(last_poems=[]))
