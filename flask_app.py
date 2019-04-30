@@ -1,6 +1,7 @@
 # импортируем библиотеки
 from flask import Flask, request
 import logging
+import rupo
 
 # библиотека, которая нам понадобится для работы с JSON
 import json
@@ -95,7 +96,7 @@ def handle_dialog(req, res):
         'еще'
     ]:
         # Пользователь согласился
-        res['response']['text'] = '\n'.join(['Стих стих стих стих стих' for i in range(4)])
+        res['response']['text'] = rupo.gen_poem()
 
         sessionStorage[user_id].get('suggests', []).append('Ещё!')
         sessionStorage[user_id].get('suggests', []).append('Хватит')
