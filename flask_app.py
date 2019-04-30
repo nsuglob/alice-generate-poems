@@ -70,12 +70,12 @@ def handle_dialog(req, res):
 
         sessionStorage[user_id] = {
             'suggests': [
-                "Давай стих",
+                "Начать",
             ],
             'last_poems': []
         }
         # Заполняем текст ответа
-        res['response']['text'] = 'Привет! Я умею генерировать стихи! Для активации скажи "давай стих".'
+        res['response']['text'] = 'Привет! Я умею генерировать стихи! Для активации скажи "начать".'
         # Получим подсказки
         res['response']['buttons'] = get_suggests(user_id)
         return
@@ -94,6 +94,10 @@ def handle_dialog(req, res):
         'еше',
         'еше!',
         'еще!',
+        'начать',
+        'начать!',
+        'начать.',
+        'начало',
         'еще'
     ]:
         # Пользователь согласился
@@ -106,7 +110,7 @@ def handle_dialog(req, res):
         sessionStorage[user_id].get('suggests', []).append('Хватит')
 
         try:
-            sessionStorage[user_id].get('suggests', []).remove('Давай стих')
+            sessionStorage[user_id].get('suggests', []).remove('Начать')
         except ValueError:
             pass
 
@@ -122,7 +126,7 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Хорошо'
         res['response']['end_session'] = True
 
-        sessionStorage[user_id]['suggests'] = ["Давай стих",]
+        sessionStorage[user_id]['suggests'] = ["Начать",]
     else:
         # Если нет
         res['response']['text'] = 'Не понимаю'
