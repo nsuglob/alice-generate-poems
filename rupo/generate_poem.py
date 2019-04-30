@@ -1,7 +1,7 @@
 import argparse
 
-from rupo.api import Engine
-from rupo.settings import RU_STRESS_DEFAULT_MODEL, ZALYZNYAK_DICT, GENERATOR_MODEL_DIR
+from .rupo.api import Engine
+from .rupo.settings import RU_STRESS_DEFAULT_MODEL, ZALYZNYAK_DICT, GENERATOR_MODEL_DIR
 
 
 def main():
