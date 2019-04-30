@@ -69,14 +69,11 @@ def handle_dialog(req, res):
 
         sessionStorage[user_id] = {
             'suggests': [
-                "Не хочу.",
-                "Не буду.",
-                "Отстань!",
+                "Давай стих",
             ],
-            'elem': 'Слон'
         }
         # Заполняем текст ответа
-        res['response']['text'] = 'Привет! Купи слона!'
+        res['response']['text'] = 'Привет! Я умею генерировать стихи! Для активации скажи "давай стих".'
         # Получим подсказки
         res['response']['buttons'] = get_suggests(user_id)
         return
@@ -86,28 +83,42 @@ def handle_dialog(req, res):
     # Обрабатываем ответ пользователя.
     # В req['request']['original_utterance'] лежит весь текст,
     # что нам прислал пользователь
-    # Если он написал 'ладно', 'куплю', 'покупаю', 'хорошо',
-    # то мы считаем, что пользователь согласился.
-    # Подумайте, всё ли в этом фрагменте написано "красиво"?
     if req['request']['original_utterance'].lower() in [
-        'ладно',
-        'куплю',
-        'покупаю',
-        'хорошо'
+        'давай стих',
+        'давай',
+        'стих',
+        'ещё!',
+        'ещё',
+        'еше',
+        'еше!',
+        'еще!',
+        'еще'
     ]:
-        # Пользователь согласился, прощаемся.
-        res['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
-        if sessionStorage[user_id]['elem'] != 'Слон':
-            res['response']['end_session'] = True
-        else:
-            sessionStorage[user_id]['elem'] = 'Не слон'
-        return
+        # Пользователь согласился
+        res['response']['text'] = '\n'.join(['Стих стих стих стих стих' for i in range(4)])
 
-    # Если нет, то убеждаем его купить слона!
-    res['response']['text'] = 'Все говорят "%s", а ты купи %s!' % (
-        req['request']['original_utterance'],
-        sessionStorage[user_id]['elem']
-    )
+        sessionStorage[user_id].get('suggests', []).append('Ещё!')
+        sessionStorage[user_id].get('suggests', []).append('Хватит')
+
+    elif req['request']['original_utterance'].lower() in [
+        'стоп',
+        'хватит',
+        'хватит.',
+        'стоп.',
+        'остановись',
+        'остановись.'
+    ]:
+        res['response']['text'] = 'Хорошо'
+        res['response']['end_session'] = True
+
+        sessionStorage[user_id] = {
+            'suggests': [
+                "Давай стих",
+            ],
+        }
+    else:
+        # Если нет
+        res['response']['text'] = 'Не понимаю'
     res['response']['buttons'] = get_suggests(user_id)
 
 
@@ -115,24 +126,18 @@ def handle_dialog(req, res):
 def get_suggests(user_id):
     session = sessionStorage[user_id]
 
-    # Выбираем две первые подсказки из массива.
+    # Выбираем подсказки из массива.
     suggests = [
         {'title': suggest, 'hide': True}
-        for suggest in session['suggests'][:2]
+        for suggest in set(session['suggests'])
     ]
 
-    # Убираем первую подсказку, чтобы подсказки менялись каждый раз.
-    session['suggests'] = session['suggests'][1:]
-    sessionStorage[user_id] = session
+    if len(suggests) > 1:
+        suggests = suggests[:-1]
+        suggests = list(reversed(suggests))
 
-    # Если осталась только одна подсказка, предлагаем подсказку
-    # со ссылкой на Яндекс.Маркет.
-    if len(suggests) < 2:
-        suggests.append({
-            "title": "Ладно",
-            "url": "https://market.yandex.ru/search?text=слон",
-            "hide": True
-        })
+    session['suggests'] = session['suggests']
+    sessionStorage[user_id] = session
 
     return suggests
 
