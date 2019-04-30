@@ -30,7 +30,7 @@ def main():
         print(seed)
         try:
             poem = engine.generate_poem(seed=seed, **kwargs)
-            return (poem)
+            print(poem)
             s += poem
         except AssertionError as e:
             print("Error: ", e)
