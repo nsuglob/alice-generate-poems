@@ -1,0 +1,63 @@
+{
+  "type": "neural_net",
+  "reader": {
+    "reverse": true,
+    "type": "lm_stream",
+    "tokens_per_instance": 200,
+    "tokenizer": {
+      "type": "word",
+      "word_splitter": {
+        "type": "just_spaces"
+      }
+    },
+    "token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "lowercase_tokens": true
+      }
+    }
+  },
+  "model": {
+    "type": "encoder_only",
+    "dropout": 0.3,
+    "embedder": {
+      "type": "basic",
+      "token_embedders": {
+        "tokens": {
+          "type": "embedding",
+          "embedding_dim": 512
+        }
+      }
+    },
+    "contextualizer": {
+      "type": "lstm",
+      "num_layers": 1,
+      "input_size": 512,
+      "hidden_size": 512
+    }
+  },
+  "train": {
+    "iterator": {
+      "type": "bucket",
+      "batch_size": 64,
+      "padding_noise": 0.0,
+      "sorting_keys": [["source_tokens", "num_tokens"]],
+      "cache_instances": true
+    },
+    "trainer": {
+      "grad_clipping": 5.0,
+      "num_epochs": 40,
+      "model_save_interval": 3600,
+      "cuda_device": 0,
+      "patience": 2,
+      "optimizer": {
+        "type": "adam",
+        "lr": 0.001
+      },
+      "shuffle": false
+    }
+  },
+  "vocabulary": {
+    "max_vocab_size": 50000
+  }
+}
