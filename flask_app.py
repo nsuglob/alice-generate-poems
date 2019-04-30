@@ -75,7 +75,7 @@ def handle_dialog(req, res):
             'last_poems': []
         }
         # Заполняем текст ответа
-        res['response']['text'] = 'Привет! Я умею генерировать стихи! Для активации скажи "начать".'
+        res['response']['text'] = 'Привет! Я умею генерировать стихи. Для активации скажите "начать".'
         # Получим подсказки
         res['response']['buttons'] = get_suggests(user_id)
         return
