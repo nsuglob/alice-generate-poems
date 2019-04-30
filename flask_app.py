@@ -105,6 +105,12 @@ def handle_dialog(req, res):
         sessionStorage[user_id].get('suggests', []).append('Ещё!')
         sessionStorage[user_id].get('suggests', []).append('Хватит')
 
+        try:
+            sessionStorage[user_id].get('suggests', []).remove('Давай стих')
+        except ValueError:
+            pass
+
+
     elif req['request']['original_utterance'].lower() in [
         'стоп',
         'хватит',
@@ -132,10 +138,6 @@ def get_suggests(user_id):
         {'title': suggest, 'hide': True}
         for suggest in set(session['suggests'])
     ]
-
-    if len(suggests) > 1:
-        suggests = suggests[:-1]
-        suggests = list(reversed(suggests))
 
     session['suggests'] = session['suggests']
     sessionStorage[user_id] = session
